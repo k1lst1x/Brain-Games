@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Кто из марсиан богаче?</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
+
+    h1 {
+      color: #4a148c;
+      margin-bottom: 10px;
+    }
+
+    .instructions {
+      background-color: #fff3e0;
+      border-left: 6px solid #ff9800;
+      padding: 16px;
+      margin-bottom: 30px;
+      max-width: 800px;
+      border-radius: 8px;
+    }
+
+    .instructions h2 {
+      margin-top: 0;
+    }
+
+    .game-container {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 20px;
+    }
+
+    .martian {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background-color: white;
+      min-height: 100px;
+      width: 45%;
+    }
+
+    .bill {
+      width: 40px;
+      height: 60px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .green { background-color: green; }
+    .red { background-color: red; }
+    .blue { background-color: blue; }
+
+    .buttons {
+      margin: 20px 0;
+    }
+
+    .buttons button {
+      padding: 12px 24px;
+      margin: 0 10px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .buttons .left { background-color: #8bc34a; color: white; }
+    .buttons .right { background-color: #03a9f4; color: white; }
+
+    .result {
+      font-size: 20px;
+      font-weight: bold;
+      color: #4a148c;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Кто из марсиан богаче?</h1>
+  <div class="instructions">
+    <h2>Как играть:</h2>
+    <p>Перед вами два марсианина. У каждого из них есть набор купюр трёх цветов:</p>
+    <ul>
+      <li><strong style="color: green;">Зелёная</strong> купюра — 1 марсианский доллар</li>
+      <li><strong style="color: red;">Красная</strong> купюра — 2 марсианских доллара</li>
+      <li><strong style="color: blue;">Синяя</strong> купюра — 5 марсианских долларов</li>
+    </ul>
+    <p>Ваша задача — определить, у кого из двух марсиан общая сумма больше. Нажмите кнопку <strong>"Слева богаче"</strong> или <strong>"Справа богаче"</strong>.</p>
+    <p>Если ответ правильный — вы увидите надпись <strong>"Правильно!"</strong>. Если ошибётесь — <strong>"Неправильно"</strong>. После каждого ответа автоматически загружается новая задача.</p>
+  </div>
+  <div class="game-container">
+    <div class="martian" id="martian1"></div>
+    <div class="martian" id="martian2"></div>
+  </div>
+  <div class="buttons">
+    <button class="left" onclick="checkAnswer(1)">Слева богаче</button>
+    <button class="right" onclick="checkAnswer(2)">Справа богаче</button>
+  </div>
+  <div class="result" id="result"></div>
+  <a href="/" class="btn-back">← Назад на главную</a>
+
+  <style>
+	.btn-back {
+		display: inline-block;
+		margin: 20px;
+		padding: 10px 20px;
+		background-color: #8a2be2;
+		color: white;
+		text-decoration: none;
+		border-radius: 8px;
+		font-weight: bold;
+		transition: background-color 0.3s ease;
+	}
+	.btn-back:hover {
+		background-color: #6d1cb3;
+	}
+  </style>
+  <script>
+    const bills = [
+      { color: 'green', value: 1 },
+      { color: 'red', value: 2 },
+      { color: 'blue', value: 5 }
+    ];
+
+    let martian1Bills = [];
+    let martian2Bills = [];
+
+    function getRandomBills() {
+      const arr = [];
+      const count = Math.floor(Math.random() * 6) + 3;
+      for (let i = 0; i < count; i++) {
+        const random = bills[Math.floor(Math.random() * bills.length)];
+        arr.push(random);
+      }
+      return arr;
+    }
+
+    function renderBills(containerId, bills) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      bills.forEach(bill => {
+        const div = document.createElement('div');
+        div.className = `bill ${bill.color}`;
+        div.innerText = '$';
+        container.appendChild(div);
+      });
+    }
+
+    function total(bills) {
+      return bills.reduce((sum, b) => sum + b.value, 0);
+    }
+
+    function newRound() {
+      martian1Bills = getRandomBills();
+      martian2Bills = getRandomBills();
+      renderBills('martian1', martian1Bills);
+      renderBills('martian2', martian2Bills);
+      document.getElementById('result').innerText = '';
+    }
+
+    function checkAnswer(choice) {
+      const total1 = total(martian1Bills);
+      const total2 = total(martian2Bills);
+      let correct = (choice === 1 && total1 > total2) || (choice === 2 && total2 > total1);
+
+      const result = document.getElementById('result');
+      result.innerText = correct ? 'Правильно! 👍' : 'Неправильно 😢';
+
+      setTimeout(newRound, 1500);
+    }
+
+    // Start the first round
+    newRound();
+  </script>
+</body>
+</html>
