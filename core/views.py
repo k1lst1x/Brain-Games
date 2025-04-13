@@ -8,3 +8,12 @@ def game_2048(request):
 
 def marsmoney(request):
     return render(request, 'marsmoney.html')
+
+def mastercards(request):
+    return render(request, 'mastercards.html')
+
+def masterpieces(request):
+    return render(request, 'masterpieces.html')
+
+def genius_memory(request):
+    return render(request, 'genius_memory.html')

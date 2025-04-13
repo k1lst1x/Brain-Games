@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Мастеркардс — Найди пары</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #4a148c;
+      margin-bottom: 10px;
+    }
+
+    .instructions {
+      background-color: #fff3e0;
+      border-left: 6px solid #ff9800;
+      padding: 16px;
+      margin: 20px 0;
+      max-width: 600px;
+      border-radius: 8px;
+    }
+
+    .instructions h2 {
+      margin-top: 0;
+    }
+
+    .moves {
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-gap: 12px;
+    }
+
+    .card {
+      width: 80px;
+      height: 80px;
+      background-color: #8a2be2;
+      color: white;
+      font-size: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .card.revealed {
+      background-color: #f3e8ff;
+      color: #333;
+      cursor: default;
+    }
+
+    .card.matched {
+      background-color: #c8e6c9;
+      color: #2e7d32;
+      cursor: default;
+    }
+
+    .btn-back {
+      display: inline-block;
+      margin: 30px 0 0;
+      padding: 10px 20px;
+      background-color: #8a2be2;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-back:hover {
+      background-color: #6d1cb3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Мастеркардс — Найди пары</h1>
+
+  <div class="instructions">
+    <h2>Как играть:</h2>
+    <p>На игровом поле расположены 16 карточек (4×4). Под каждой карточкой скрыт один из 8 различных эмоджи — по два экземпляра каждого. Ваша задача — найти все пары одинаковых эмоджи.</p>
+    <ul>
+      <li>Щёлкните по карточке, чтобы её открыть.</li>
+      <li>Открывайте по две карточки за ход.</li>
+      <li>Если карточки совпадают — они останутся открытыми.</li>
+      <li>Если нет — они закроются автоматически.</li>
+    </ul>
+    <p>Цель игры — открыть все пары как можно меньшим числом ходов.</p>
+  </div>
+
+  <div class="moves">Ходы: <span id="moves">0</span></div>
+  <div class="board" id="board"></div>
+  <a href="/" class="btn-back">← Назад на главную</a>
+
+  <script>
+    const emojis = ['🍎','🚗','🐶','🎵','🎮','🌈','🍕','⚽️'];
+    const board = document.getElementById('board');
+    const movesText = document.getElementById('moves');
+    let cards = [];
+    let revealed = [];
+    let matched = 0;
+    let moves = 0;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function createBoard() {
+      const pairEmojis = [...emojis, ...emojis];
+      shuffle(pairEmojis);
+      board.innerHTML = '';
+      moves = 0;
+      matched = 0;
+      revealed = [];
+      movesText.textContent = '0';
+
+      cards = pairEmojis.map((emoji, index) => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.dataset.index = index;
+        div.dataset.emoji = emoji;
+        div.innerHTML = '';
+        div.addEventListener('click', handleClick);
+        board.appendChild(div);
+        return div;
+      });
+    }
+
+    function handleClick(e) {
+      const card = e.currentTarget;
+      const index = card.dataset.index;
+      if (card.classList.contains('revealed') || card.classList.contains('matched') || revealed.length === 2) {
+        return;
+      }
+
+      card.classList.add('revealed');
+      card.innerHTML = card.dataset.emoji;
+      revealed.push(card);
+
+      if (revealed.length === 2) {
+        moves++;
+        movesText.textContent = moves;
+        const [card1, card2] = revealed;
+
+        if (card1.dataset.emoji === card2.dataset.emoji) {
+          card1.classList.add('matched');
+          card2.classList.add('matched');
+          matched += 2;
+          revealed = [];
+
+          if (matched === 16) {
+            setTimeout(() => alert(`Поздравляем! Вы нашли все пары за ${moves} ходов.`), 300);
+          }
+        } else {
+          setTimeout(() => {
+            card1.classList.remove('revealed');
+            card2.classList.remove('revealed');
+            card1.innerHTML = '';
+            card2.innerHTML = '';
+            revealed = [];
+          }, 1000);
+        }
+      }
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>

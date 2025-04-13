@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Выдающийся ум — Найди замену</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #4a148c;
+      margin-bottom: 10px;
+    }
+
+    .instructions {
+      max-width: 600px;
+      background-color: #fff3e0;
+      border-left: 6px solid #ff9800;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      grid-gap: 12px;
+      margin: 20px 0;
+    }
+
+    .cell {
+      width: 80px;
+      height: 80px;
+      background-color: #8a2be2;
+      color: white;
+      font-size: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .cell:hover {
+      background-color: #6d1cb3;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #8a2be2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background-color: #6d1cb3;
+    }
+
+    .btn-back {
+      margin-top: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #8a2be2;
+    }
+
+    .message {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Выдающийся ум — Найди замену</h1>
+  <div class="instructions">
+    <p>Запомните все 9 изображений (эмоджи) на поле. После этого одно из них будет заменено на новое, а расположение всех изменится. Ваша задача — выбрать изображение, которого <strong>не было</strong> раньше.</p>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <button id="continueBtn" class="btn" style="display:none;">Продолжить</button>
+  <div id="message" class="message"></div>
+  <button id="restartBtn" class="btn" style="display:none;">Начать заново</button>
+  <a href="/" class="btn-back">← Назад на главную</a>
+
+  <script>
+    const allEmojis = ['🍎','🚗','🐶','🎵','🎮','🌈','🍕','⚽️','🎯','📚','🎲','🧸'];
+    let original = [];
+    let modified = [];
+    let replacedEmoji = '';
+    let isChoosing = false;
+
+    const grid = document.getElementById('grid');
+    const continueBtn = document.getElementById('continueBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const message = document.getElementById('message');
+
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+    }
+
+    function setupGame() {
+      original = [...allEmojis];
+      shuffle(original);
+      original = original.slice(0, 9);
+      renderGrid(original);
+      continueBtn.style.display = 'inline-block';
+      restartBtn.style.display = 'none';
+      message.innerText = '';
+      isChoosing = false;
+    }
+
+    function modifyGrid() {
+      const toReplace = original[Math.floor(Math.random() * original.length)];
+      let newEmoji = allEmojis.find(e => !original.includes(e));
+      replacedEmoji = newEmoji;
+      modified = original.map(e => e === toReplace ? newEmoji : e);
+      shuffle(modified);
+      renderGrid(modified);
+      isChoosing = true;
+      continueBtn.style.display = 'none';
+    }
+
+    function renderGrid(array) {
+      grid.innerHTML = '';
+      array.forEach(emoji => {
+        const div = document.createElement('div');
+        div.className = 'cell';
+        div.innerText = emoji;
+        div.addEventListener('click', () => {
+          if (!isChoosing) return;
+          if (emoji === replacedEmoji) {
+            message.innerText = 'Правильно! 🎉';
+          } else {
+            message.innerText = `Неправильно. Было заменено на ${replacedEmoji}`;
+          }
+          restartBtn.style.display = 'inline-block';
+          isChoosing = false;
+        });
+        grid.appendChild(div);
+      });
+    }
+
+    continueBtn.addEventListener('click', modifyGrid);
+    restartBtn.addEventListener('click', setupGame);
+
+    setupGame();
+  </script>
+</body>
+</html>
