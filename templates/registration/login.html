@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход — Kids Brain Games</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to bottom, #f5f0ff, #e6f0ff);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .login-card h2 {
+      font-size: 2rem;
+      color: #8a2be2;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form p {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .btn-primary {
+      background-color: #8a2be2;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background-color: #7722c9;
+    }
+
+    .password-reset,
+    .no-account,
+    .back-home {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .password-reset a,
+    .no-account a,
+    .back-home a {
+      color: #8a2be2;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .password-reset a:hover,
+    .no-account a:hover,
+    .back-home a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2>Вход</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn-primary">Войти</button>
+    </form>
+    <div class="password-reset">
+      <a href="{% url 'password_reset' %}">Забыли пароль?</a>
+    </div>
+    <div class="no-account">
+      Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a>
+    </div>
+    <div class="back-home">
+      <a href="/">← Вернуться на главную</a>
+    </div>
+  </div>
+</body>
+</html>
