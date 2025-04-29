@@ -106,6 +106,23 @@
   <div class="moves">Ходы: <span id="moves">0</span></div>
   <div class="board" id="board"></div>
   <a href="/" class="btn-back">← Назад на главную</a>
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+  </script>
 
   <script>
     const emojis = ['🍎','🚗','🐶','🎵','🎮','🌈','🍕','⚽️'];
@@ -144,6 +161,24 @@
       });
     }
 
+    function awardPoints() {
+      fetch('/add_score/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({points: 20}),  // 🎯 например, 20 очков за прохождение
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Очки начислены! Новый счёт:', data.new_score);
+      })
+      .catch(error => {
+        console.error('Ошибка начисления очков:', error);
+      });
+    }
+
     function handleClick(e) {
       const card = e.currentTarget;
       const index = card.dataset.index;
@@ -167,7 +202,10 @@
           revealed = [];
 
           if (matched === 16) {
-            setTimeout(() => alert(`Поздравляем! Вы нашли все пары за ${moves} ходов.`), 300);
+              setTimeout(() => {
+                  alert(`Поздравляем! Вы нашли все пары за ${moves} ходов.`);
+                  awardPoints();
+              }, 300);
           }
         } else {
           setTimeout(() => {

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Охота за цифрами — Найди сумму</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fdfdfd;
+      margin: 0;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #4a148c;
+      margin-bottom: 10px;
+    }
+
+    .instructions {
+      max-width: 600px;
+      margin: 0 auto 20px;
+      background-color: #fff3e0;
+      border-left: 6px solid #ff9800;
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .game-area {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      height: 300px;
+      margin: 0 auto 20px;
+      background-color: #f0f0f0;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px dashed #ccc;
+    }
+
+    .number {
+      position: absolute;
+      font-size: 24px;
+      font-weight: bold;
+      background-color: #8a2be2;
+      color: white;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .form {
+      margin-top: 10px;
+    }
+
+    input[type="number"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 100px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .btn {
+      margin-left: 10px;
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      background-color: #8a2be2;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #6d1cb3;
+    }
+
+    .btn-back {
+      display: inline-block;
+      margin-top: 30px;
+      text-decoration: none;
+      color: #8a2be2;
+      font-weight: bold;
+    }
+
+    .result {
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Охота за цифрами</h1>
+  <div class="instructions">
+    <p>Какой результат вы получите, сложив все передвигающиеся числа? Внимательно наблюдайте за цифрами, которые двигаются по экрану, и введите их сумму ниже.</p>
+  </div>
+
+  <div class="game-area" id="gameArea"></div>
+
+  <div class="form">
+    <label>Сумма: </label>
+    <input type="number" id="userSum" />
+    <button class="btn" onclick="checkSum()">Проверить</button>
+    <button class="btn" onclick="startGame()">Начать заново</button>
+  </div>
+
+  <div id="result" class="result"></div>
+
+  <a href="/" class="btn-back">← Назад на главную</a>
+
+  <script>
+    const gameArea = document.getElementById('gameArea');
+    const resultText = document.getElementById('result');
+    let totalSum = 0;
+    let numbers = [];
+    let interval;
+
+    function getRandom(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function createNumber() {
+      const numberEl = document.createElement('div');
+      numberEl.className = 'number';
+      const value = getRandom(1, 9);
+      numberEl.innerText = value;
+
+      let x = getRandom(0, gameArea.clientWidth - 40);
+      let y = getRandom(0, gameArea.clientHeight - 40);
+      let dx = getRandom(-2, 2) || 1;
+      let dy = getRandom(-2, 2) || 1;
+
+      numberEl.style.left = x + 'px';
+      numberEl.style.top = y + 'px';
+      gameArea.appendChild(numberEl);
+
+      numbers.push({ el: numberEl, value, x, y, dx, dy });
+      totalSum += value;
+    }
+
+    function moveNumbers() {
+      numbers.forEach(obj => {
+        obj.x += obj.dx;
+        obj.y += obj.dy;
+
+        if (obj.x <= 0 || obj.x >= gameArea.clientWidth - 40) obj.dx *= -1;
+        if (obj.y <= 0 || obj.y >= gameArea.clientHeight - 40) obj.dy *= -1;
+
+        obj.el.style.left = obj.x + 'px';
+        obj.el.style.top = obj.y + 'px';
+      });
+    }
+
+    function checkSum() {
+      const userInput = parseInt(document.getElementById('userSum').value, 10);
+      if (userInput === totalSum) {
+        resultText.innerText = 'Правильно! 🎉';
+      } else {
+        resultText.innerText = `Неправильно. Правильная сумма: ${totalSum}`;
+      }
+    }
+
+    function startGame() {
+      clearInterval(interval);
+      gameArea.innerHTML = '';
+      resultText.innerText = '';
+      document.getElementById('userSum').value = '';
+      totalSum = 0;
+      numbers = [];
+      for (let i = 0; i < 6; i++) {
+        createNumber();
+      }
+      interval = setInterval(moveNumbers, 30);
+    }
+
+    startGame();
+  </script>
+</body>
+</html>

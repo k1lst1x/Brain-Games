@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Still Awake — Запомни свет</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #4a148c;
+    }
+
+    .instructions {
+      max-width: 600px;
+      background-color: #fff3e0;
+      border-left: 6px solid #ff9800;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      grid-gap: 12px;
+      margin: 20px 0;
+    }
+
+    .cell {
+      width: 80px;
+      height: 80px;
+      background-color: #333;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .cell.lit {
+      background-color: #ffd600;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #8a2be2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    .btn:hover {
+      background-color: #6d1cb3;
+    }
+
+    .btn-back {
+      margin-top: 10px;
+      text-decoration: none;
+      color: #8a2be2;
+      font-weight: bold;
+    }
+
+    .message {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Still Awake</h1>
+  <div class="instructions">
+    <p>Запомните, в каких квартирах горит свет. После нажатия «Продолжить» постарайтесь воспроизвести этот же световой узор, включая нужные квартиры.</p>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <button class="btn" onclick="continueGame()" id="continueBtn">Продолжить</button>
+  <button class="btn" onclick="checkResult()" id="checkBtn" style="display:none;">Проверить</button>
+  <button class="btn" onclick="startGame()">Начать заново</button>
+  <a href="/" class="btn-back">← Назад на главную</a>
+  <div class="message" id="message"></div>
+
+  <script>
+    const grid = document.getElementById('grid');
+    const message = document.getElementById('message');
+    const continueBtn = document.getElementById('continueBtn');
+    const checkBtn = document.getElementById('checkBtn');
+    let solution = [];
+    let guessMode = false;
+
+    function getRandomLitCells(count = 3) {
+      const cells = new Set();
+      while (cells.size < count) {
+        cells.add(Math.floor(Math.random() * 9));
+      }
+      return Array.from(cells);
+    }
+
+    function startGame() {
+      grid.innerHTML = '';
+      message.innerText = '';
+      continueBtn.style.display = 'inline-block';
+      checkBtn.style.display = 'none';
+      guessMode = false;
+      solution = getRandomLitCells();
+
+      for (let i = 0; i < 9; i++) {
+        const div = document.createElement('div');
+        div.className = 'cell';
+        if (solution.includes(i)) {
+          div.classList.add('lit');
+        }
+        grid.appendChild(div);
+      }
+    }
+
+    function continueGame() {
+      guessMode = true;
+      message.innerText = '';
+      checkBtn.style.display = 'inline-block';
+      continueBtn.style.display = 'none';
+
+      const cells = document.querySelectorAll('.cell');
+      cells.forEach(cell => cell.classList.remove('lit'));
+
+      cells.forEach((cell, i) => {
+        cell.addEventListener('click', () => {
+          if (!guessMode) return;
+          cell.classList.toggle('lit');
+        });
+      });
+    }
+
+    function checkResult() {
+      const cells = document.querySelectorAll('.cell');
+      let correct = true;
+      cells.forEach((cell, i) => {
+        const shouldBeLit = solution.includes(i);
+        const isLit = cell.classList.contains('lit');
+        if (shouldBeLit !== isLit) correct = false;
+      });
+
+      message.innerText = correct ? 'Правильно! 🎉' : 'Неправильно. Попробуйте ещё раз.';
+    }
+
+    startGame();
+  </script>
+</body>
+</html>

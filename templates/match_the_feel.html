@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Match the Feel — Найди общую тематику</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fafafa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #4a148c;
+    }
+
+    .instructions {
+      max-width: 600px;
+      background-color: #fff3e0;
+      border-left: 6px solid #ff9800;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      grid-gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .cell {
+      width: 80px;
+      height: 80px;
+      font-size: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #8a2be2;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cell.selected {
+      background-color: #d1c4e9;
+      color: #4a148c;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background-color: #8a2be2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #6d1cb3;
+    }
+
+    .btn-back {
+      margin-top: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #8a2be2;
+    }
+
+    .message {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Match the Feel</h1>
+  <div class="instructions">
+    <p>Кликните по эмодзи, чтобы сделать их похожими по тематике. Цель — добиться того, чтобы все эмодзи отображали одну тему. Каждый клик меняет изображение внутри клетки. Тематика: фрукты, спорт, лица, музыка, животные и др.</p>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <button class="btn" onclick="startGame()">Начать заново</button>
+  <a href="/" class="btn-back">← Назад на главную</a>
+  <div id="message" class="message"></div>
+
+  <script>
+    const categories = {
+      fruits: ['🍎', '🍌', '🍇', '🍉', '🍍', '🥝', '🍑', '🍒'],
+      sports: ['⚽️', '🏀', '🏈', '🎾', '🥎', '🏐', '🥊', '🏓'],
+      faces: ['😀', '😎', '😂', '😡', '🥶', '🥵', '🥳', '😱'],
+      music: ['🎵', '🎷', '🎸', '🎤', '🎹', '🥁', '🎻', '📯'],
+      animals: ['🐶', '🐱', '🦁', '🐵', '🐼', '🐸', '🐧', '🐢']
+    };
+
+    let grid = document.getElementById('grid');
+    let message = document.getElementById('message');
+    let cells = [];
+    let currentSet = [];
+
+    function getRandomCategory() {
+      const keys = Object.keys(categories);
+      return keys[Math.floor(Math.random() * keys.length)];
+    }
+
+    function getRandomEmojiFromCategory(cat) {
+      const options = categories[cat];
+      return options[Math.floor(Math.random() * options.length)];
+    }
+
+    function startGame() {
+      grid.innerHTML = '';
+      message.innerText = '';
+      cells = [];
+      const selected = [];
+
+      while (selected.length < 9) {
+        const cat = getRandomCategory();
+        const emoji = getRandomEmojiFromCategory(cat);
+        selected.push({ cat, emoji });
+      }
+
+      selected.forEach(({ cat, emoji }, i) => {
+        const div = document.createElement('div');
+        div.className = 'cell';
+        div.innerText = emoji;
+        div.dataset.cat = cat;
+
+        div.addEventListener('click', () => {
+          const categoriesList = Object.keys(categories);
+          const nextIndex = (categoriesList.indexOf(div.dataset.cat) + 1) % categoriesList.length;
+          const nextCat = categoriesList[nextIndex];
+          div.dataset.cat = nextCat;
+          div.innerText = getRandomEmojiFromCategory(nextCat);
+          checkVictory();
+        });
+
+        grid.appendChild(div);
+        cells.push(div);
+      });
+    }
+
+    function checkVictory() {
+      const firstCat = cells[0].dataset.cat;
+      const allSame = cells.every(cell => cell.dataset.cat === firstCat);
+      if (allSame) {
+        message.innerText = 'Поздравляем! Все эмодзи теперь из одной тематики! 🎉';
+      }
+    }
+
+    startGame();
+  </script>
+</body>
+</html>

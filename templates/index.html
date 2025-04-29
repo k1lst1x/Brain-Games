@@ -37,6 +37,11 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 1rem; /* важно */
+            line-height: 1.2; /* важно */
+            text-align: center; /* важно */
+            border: none; /* важно для кнопок */
+            background: none; /* обнуляет фон у button */
         }
 
         .btn-primary {
@@ -288,6 +293,8 @@
                             <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
                             <a href="{% url 'register' %}" class="btn btn-outline">Регистрация</a>
                         {% endif %}
+
+                        <a href="{% url 'leaderboard' %}" class="btn btn-primary">🏆 Рейтинг игроков</a>
                     </div>   
                 </div>
                 <div class="hero-image">
@@ -361,6 +368,56 @@
                     <h3>Гениальный Ум</h3>
                     <p>Найдите один эмодзи, который был заменён. Проверяет вашу память и внимательность!</p>
                     <a href="/genius_memory/" class="btn btn-outline">Играть в Гения</a>
+                </div>
+
+                <!-- Number Hunt -->
+                <div class="card card-brain">
+                    <div class="card-icon">
+                    <span style="font-size: 28px;">🔢</span>
+                    </div>
+                    <h3>Охота за Цифрами</h3>
+                    <p>Следите за движущимися цифрами и посчитайте их сумму. Отличная тренировка внимания и устного счёта!</p>
+                    <a href="/number_hunt/" class="btn btn-outline">Играть в Охоту</a>
+                </div>
+                
+                <!-- Color Pairs -->
+                <div class="card card-memory">
+                    <div class="card-icon">
+                    <span style="font-size: 28px;">🎨</span>
+                    </div>
+                    <h3>Цветовые Пары</h3>
+                    <p>Найдите совпадающие эмодзи на экране. Ошибся — начни сначала! Тренирует память и визуальное восприятие.</p>
+                    <a href="/color_pairs/" class="btn btn-outline">Играть в Цвета</a>
+                </div>
+                
+                <!-- Match the Feel -->
+                <div class="card card-logic">
+                    <div class="card-icon">
+                    <span style="font-size: 28px;">💫</span>
+                    </div>
+                    <h3>Общая Тематика</h3>
+                    <p>Меняйте эмодзи в ячейках, пока все не будут относиться к одной тематике. Прокачайте мышление!</p>
+                    <a href="/match_the_feel/" class="btn btn-outline">Играть в Темы</a>
+                </div>
+                
+                <!-- Still Awake -->
+                <div class="card card-memory">
+                    <div class="card-icon">
+                    <span style="font-size: 28px;">🌙</span>
+                    </div>
+                    <h3>Не Спит</h3>
+                    <p>Запомните, в каких квартирах горел свет. Потом укажите те, что остались освещёнными. Проверка памяти!</p>
+                    <a href="/still_awake/" class="btn btn-outline">Играть в Квартиры</a>
+                </div>
+                
+                <!-- Chess (Placeholder if not implemented) -->
+                <div class="card card-logic">
+                    <div class="card-icon">
+                    <span style="font-size: 28px;">♟️</span>
+                    </div>
+                    <h3>Шахматы с ИИ</h3>
+                    <p>Играйте в шахматы против искусственного интеллекта. Настройте глубину поиска и наблюдайте за ходами компьютера в реальном времени!</p>
+                    <a href="/chess/" class="btn btn-outline">Играть в Шахматы</a>
                 </div>
             </div>
         </div>
