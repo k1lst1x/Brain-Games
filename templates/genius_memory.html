@@ -92,6 +92,23 @@
   <div id="message" class="message"></div>
   <button id="restartBtn" class="btn" style="display:none;">Начать заново</button>
   <a href="/" class="btn-back">← Назад на главную</a>
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+  </script>  
 
   <script>
     const allEmojis = ['🍎','🚗','🐶','🎵','🎮','🌈','🍕','⚽️','🎯','📚','🎲','🧸'];
@@ -133,6 +150,23 @@
       isChoosing = true;
       continueBtn.style.display = 'none';
     }
+    function awardPoints() {
+      fetch('/add_score/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({points: 10}),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log('Очки начислены! Новый счёт:', data.new_score);
+      })
+      .catch(error => {
+        console.error('Ошибка начисления очков:', error);
+      });
+    }
 
     function renderGrid(array) {
       grid.innerHTML = '';
@@ -144,6 +178,7 @@
           if (!isChoosing) return;
           if (emoji === replacedEmoji) {
             message.innerText = 'Правильно! 🎉';
+            awardPoints(); // 👉 добавляем начисление очков
           } else {
             message.innerText = `Неправильно. Было заменено на ${replacedEmoji}`;
           }
