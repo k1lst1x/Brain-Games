@@ -1,0 +1,137 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Профиль игрока</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f0ff;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    h1 {
+      color: #8a2be2;
+      margin-bottom: 20px;
+    }
+
+    .profile-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      display: inline-block;
+      padding: 40px 30px;
+      animation: fadeInUp 0.8s forwards;
+      transform: translateY(50px);
+      opacity: 0;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .username {
+      font-size: 24px;
+      color: #333;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .score {
+      font-size: 20px;
+      color: #059669;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+      margin: 5px;
+    }
+
+    .btn-logout {
+      background-color: #8a2be2;
+      color: white;
+    }
+
+    .btn-logout:hover {
+      background-color: #6d1cb3;
+    }
+
+    .btn-back {
+      background-color: transparent;
+      color: #8a2be2;
+      border: 2px solid #d8c2f3;
+    }
+
+    .btn-back:hover {
+      background-color: #f5f0ff;
+    }
+
+	.glowing-medal {
+		display: inline-block;
+		animation: glow 1.5s infinite alternate;
+	}
+
+	@keyframes glow {
+		from {
+			text-shadow: 0 0 5px #ffc107, 0 0 10px #ffc107;
+		}
+		to {
+			text-shadow: 0 0 15px #ffeb3b, 0 0 25px #ffeb3b;
+		}
+	}
+
+	.congrats {
+		font-size: 18px;
+		color: #ff9800;
+		margin-top: -20px;
+		margin-bottom: 30px;
+		font-weight: bold;
+		animation: fadeInUp 0.8s forwards;
+	}
+  </style>
+</head>
+<body>
+  <h1>👤 Профиль игрока</h1>
+
+  <div class="profile-card">
+    <div class="username">{{ user.username }}</div>
+	<div class="score">Очки: {{ user.score }}</div>
+	<div class="score">
+		Место в рейтинге:
+		{% if rank == 1 %}
+			<span class="glowing-medal">🥇</span>
+		{% elif rank == 2 %}
+			<span class="glowing-medal">🥈</span>
+		{% elif rank == 3 %}
+			<span class="glowing-medal">🥉</span>
+		{% endif %}
+		{{ rank }} из {{ total }}
+	</div>
+	
+	{% if rank <= 3 %}
+		<div class="congrats">Поздравляем! Вы в топ-{{ rank }} игроков 🎉</div>
+	{% endif %}
+
+    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-logout">Выйти</button>
+    </form>
+    <a href="/" class="btn btn-back">← На главную</a>
+  </div>
+</body>
+</html>

@@ -281,21 +281,19 @@
                     <h1>Весёлые игры для развивающегося ума</h1>
                     <p>Увлекательные игры, которые помогут развить у вашего ребёнка логику, память и умственные способности — и всё это в игровой форме!</p>
                     <div class="hero-buttons">
-                        <!-- <a href="#" class="btn btn-primary">Начать играть</a>
-                        <a href="#" class="btn btn-outline">Узнать больше</a> -->
-                        
                         {% if user.is_authenticated %}
                             <form method="post" action="{% url 'logout' %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline">Выйти</button>
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-outline">Выйти</button>
                             </form>
+                            <a href="{% url 'profile' %}" class="btn btn-outline">👤 Профиль игрока</a>
                         {% else %}
                             <a href="{% url 'login' %}" class="btn btn-primary">Войти</a>
                             <a href="{% url 'register' %}" class="btn btn-outline">Регистрация</a>
                         {% endif %}
 
                         <a href="{% url 'leaderboard' %}" class="btn btn-primary">🏆 Рейтинг игроков</a>
-                    </div>   
+                    </div>                       
                 </div>
                 <div class="hero-image">
                     <div class="logo-frame">

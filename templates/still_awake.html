@@ -103,6 +103,37 @@
       return Array.from(cells);
     }
 
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    function awardPoints(points = 10) {
+      fetch('/add_score/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({ points: points })
+      })
+      .then(res => res.json())
+      .then(data => console.log('Очки начислены:', data.new_score))
+      .catch(err => console.error('Ошибка начисления очков:', err));
+    }
+
     function startGame() {
       grid.innerHTML = '';
       message.innerText = '';
@@ -147,7 +178,12 @@
         if (shouldBeLit !== isLit) correct = false;
       });
 
-      message.innerText = correct ? 'Правильно! 🎉' : 'Неправильно. Попробуйте ещё раз.';
+      if (correct) {
+        message.innerText = 'Правильно! 🎉';
+        awardPoints(5);
+      } else {
+        message.innerText = 'Неправильно. Попробуйте ещё раз.';
+      }
     }
 
     startGame();

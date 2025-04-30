@@ -15,4 +15,5 @@ urlpatterns = [
 	path('match_the_feel/', views.match_the_feel, name='match_the_feel'),
 	path('still_awake/', views.still_awake, name='still_awake'),
 	path('leaderboard/', views.leaderboard_view, name='leaderboard'),
+	path('profile/', views.profile_view, name='profile'),
 ]

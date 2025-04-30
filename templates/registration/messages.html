@@ -1,0 +1,50 @@
+{% if messages %}
+  <ul style="margin-bottom: 20px; list-style: none; padding: 0;">
+    {% for message in messages %}
+      <li style="
+        padding: 10px 16px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        background-color: {% if message.tags == 'error' %}#ffe5e5{% else %}#e6f7ff{% endif %};
+        color: {% if message.tags == 'error' %}#b00020{% else %}#00529b{% endif %};
+        border-left: 5px solid {% if message.tags == 'error' %}#b00020{% else %}#8a2be2{% endif %};
+        font-weight: bold;
+      ">
+        {{ message }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% if form.errors %}
+  <ul style="margin-bottom: 20px; list-style: none; padding: 0;">
+    {% for field in form %}
+      {% for error in field.errors %}
+        <li style="
+          padding: 10px 16px;
+          margin-bottom: 10px;
+          border-radius: 6px;
+          background-color: #ffe5e5;
+          color: #b00020;
+          border-left: 5px solid #b00020;
+          font-weight: bold;
+        ">
+          {{ error }}
+        </li>
+      {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+      <li style="
+        padding: 10px 16px;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        background-color: #ffe5e5;
+        color: #b00020;
+        border-left: 5px solid #b00020;
+        font-weight: bold;
+      ">
+        {{ error }}
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

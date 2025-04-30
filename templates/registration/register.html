@@ -101,9 +101,15 @@
 <body>
   <div class="register-card">
     <h2>Регистрация</h2>
+    {% include 'registration/messages.html' %}
     <form method="post">
       {% csrf_token %}
-      {{ form.as_p }}
+      {% for field in form %}
+        <div style="margin-bottom: 16px;">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+        </div>
+      {% endfor %}
       <button type="submit" class="btn-primary">Зарегистрироваться</button>
     </form>
     <div class="login-link">

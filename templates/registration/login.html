@@ -103,9 +103,15 @@
 <body>
   <div class="login-card">
     <h2>Вход</h2>
+    {% include 'registration/messages.html' %}
     <form method="post">
       {% csrf_token %}
-      {{ form.as_p }}
+      {% for field in form %}
+        <div style="margin-bottom: 16px;">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+        </div>
+      {% endfor %}
       <button type="submit" class="btn-primary">Войти</button>
     </form>
     <div class="password-reset">

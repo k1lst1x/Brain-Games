@@ -12,3 +12,5 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('score',)}),
     )
     list_display = ['username', 'email', 'score', 'is_staff']
+    search_fields = ['username', 'email']
+    ordering = ['-score']
