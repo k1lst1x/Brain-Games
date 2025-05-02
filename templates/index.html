@@ -68,6 +68,10 @@
         .hero {
             background: linear-gradient(to bottom, #f5f0ff, #e6f0ff);
             padding: 60px 0;
+            background-image: url("{% static 'images/symbol.png' %}");
+            background-position: top left;
+            background-repeat: no-repeat;
+            background-size:auto;
         }
 
         .hero-content {
@@ -270,9 +274,130 @@
             border-radius: 16px;
             padding: 10px;
         }
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,.06);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 72px;
+        }
+
+        /* Brand */
+        .nav-logo img {
+            height: 48px;
+            width: auto;
+        }
+
+        /* Hamburger */
+        .nav-toggle {
+            display: none;                /* shown via media query */
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: 0;
+            cursor: pointer;
+        }
+        .nav-toggle span {
+            width: 26px;
+            height: 3px;
+            background: #8a2be2;
+            border-radius: 2px;
+            transition: transform .3s ease;
+        }
+
+        /* Links */
+        .nav-links ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-links a.btn {
+            padding: 8px 16px;            /* a bit slimmer than hero buttons */
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 768px) {
+            .nav-toggle { display: flex; }
+
+            .nav-links {
+                position: absolute;
+                top: 100%; left: 0; right: 0;
+                background: #fff;
+                max-height: 0;
+                overflow: hidden;
+                box-shadow: 0 8px 16px rgba(0,0,0,.08);
+                transition: max-height .35s ease;
+            }
+            .nav-links ul {
+                flex-direction: column;
+                padding: 16px 0;
+            }
+            .nav-links.show {             /* toggled via JS */
+                max-height: 400px;          /* enough for all links */
+            }
+        }
+        /* === Декор между секциями === */
+        .ornament-divider {
+            width: 100%;
+            height: 80px;                       /* подстройте высоту под рисунок */
+            background: url("{% static 'images/ornament.png' %}") repeat-x center/contain;
+            background-color: #f2f2f2;
+        }
+        .ornament-divider:nth-of-type(1n) { background-color: #dbceff; } /* чуть темнее фиолетового (#8a2be2) */
+        .ornament-divider:nth-of-type(2n) { background-color: #ffeccf; } /* чуть темнее янтарного (#d97706) */
+        .ornament-divider:nth-of-type(3n) { background-color: #dce8ff; } /* чуть темнее синего   (#2563eb) */
+        .ornament-divider:nth-of-type(4n) { background-color: #d6f7ec; } /* чуть темнее зелёного (#059669) */
     </style>
 </head>
 <body>
+    <!-- ========================= NAVBAR ========================= -->
+    <header class="navbar">
+        <div class="container nav-wrapper">
+            <!-- Логотип -->
+            <a href="{% url 'index' %}" class="nav-logo">
+                <img src="{% static 'images/logo.png' %}" alt="Kids Brain Games">
+            </a>
+        
+            <!-- Гамбургер (виден <768 px) -->
+            <button class="nav-toggle" aria-label="Открыть навигацию">
+                <span></span><span></span><span></span>
+            </button>
+        
+            <!-- Основные ссылки -->
+            <nav class="nav-links">
+                <ul>
+                <li><a href="{% url 'index' %}#games"    class="btn">Игры</a></li>
+                <li><a href="{% url 'index' %}#why"      class="btn">Почему важно</a></li>
+                <li><a href="{% url 'index' %}#quiz"     class="btn">Подбор игры</a></li>
+                <li><a href="{% url 'index' %}#parents"  class="btn">Для родителей</a></li>
+                <li><a href="{% url 'leaderboard' %}"    class="btn btn-primary">🏆 Рейтинг</a></li>
+        
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'profile' %}" class="btn">👤 Профиль</a></li>
+                    <li>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn">Выйти</button>
+                    </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}"    class="btn btn-primary">Войти</a></li>
+                    <li><a href="{% url 'register' %}" class="btn">Регистрация</a></li>
+                {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+  
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
@@ -304,8 +429,10 @@
         </div>
     </section>
 
+    <div class="ornament-divider"></div>
+
     <!-- Why It Matters Section -->
-    <section style="background: #ecfdf5; padding: 80px 20px;">
+    <section style="background: #ecfdf5; padding: 80px 20px;" id="why">
         <div class="container">
             <div class="section-header">
                 <h2 style="color: #059669;">Почему это важно?</h2>
@@ -316,8 +443,10 @@
         </div>
     </section>
 
+    <div class="ornament-divider"></div>
+
 	<!-- Game Categories Section -->
-	<section class="games-section">
+	<section class="games-section" id="games">
         <div class="container">
             <div class="section-header">
                 <h2>Наши Игры</h2>
@@ -327,10 +456,7 @@
                 <!-- Карточка игры 2048 -->
                 <div class="card card-logic">
                     <div class="card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 4h16v16H4z"/>
-                            <path d="M8 8h8v8H8z"/>
-                        </svg>
+                        <img src="{% static 'images/kumis_bowl.png' %}" alt="Kumis Bowl" width="60" height="60">
                     </div>
                     <h3>Головоломка 2048</h3>
                     <p>Используйте стрелки, чтобы объединять числа и достичь 2048. Отлично развивает логику и числовое мышление!</p>
@@ -340,10 +466,7 @@
                 <!-- Карточка игры Martian Money -->
                 <div class="card card-memory">
                     <div class="card-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 1v22M1 12h22"/>
-                            <circle cx="12" cy="12" r="10"/>
-                        </svg>
+                        <img src="{% static 'images/tenge_money.png' %}" alt="Tenge Money" width="60" height="60">
                     </div>
                     <h3>Марсианские Деньги</h3>
                     <p>Определите, какой марсианин богаче, анализируя их инопланетную валюту. Цвет = значение!</p>
@@ -353,7 +476,7 @@
                 <!-- Mastercards -->
                 <div class="card card-memory">
                     <div class="card-icon">
-                        <span style="font-size: 28px;">🃏</span>
+                        <img src="{% static 'images/golden_sheep.png' %}" alt="Golden Sheep" width="60" height="60">
                     </div>
                     <h3>Мастер-карты</h3>
                     <p>Находите пары эмодзи, скрытые под картами. Развивает зрительную память и внимание!</p>
@@ -363,7 +486,7 @@
                 <!-- Masterpieces -->
                 <div class="card card-logic">
                     <div class="card-icon">
-                        <span style="font-size: 28px;">🧠</span>
+                        <img src="{% static 'images/kazakh_pattern_flag.png' %}" alt="Kazakh Pattern" width="60" height="60">
                     </div>
                     <h3>Шедевры Памяти</h3>
                     <p>Запомните порядок эмодзи и воспроизведите точную последовательность. Отлично тренирует кратковременную память!</p>
@@ -373,7 +496,7 @@
                 <!-- Brilliant Mind -->
                 <div class="card card-brain">
                     <div class="card-icon">
-                        <span style="font-size: 28px;">🎓</span>
+                        <img src="{% static 'images/kazakh_elder.png' %}" alt="Elder" width="60" height="60">
                     </div>
                     <h3>Гениальный Ум</h3>
                     <p>Найдите один эмодзи, который был заменён. Проверяет вашу память и внимательность!</p>
@@ -383,7 +506,7 @@
                 <!-- Number Hunt -->
                 <div class="card card-brain">
                     <div class="card-icon">
-                    <span style="font-size: 28px;">🔢</span>
+                        <img src="{% static 'images/kazakh_horse.png' %}" alt="Horse" width="60" height="60">
                     </div>
                     <h3>Охота за Цифрами</h3>
                     <p>Следите за движущимися цифрами и посчитайте их сумму. Отличная тренировка внимания и устного счёта!</p>
@@ -393,7 +516,7 @@
                 <!-- Color Pairs -->
                 <div class="card card-memory">
                     <div class="card-icon">
-                    <span style="font-size: 28px;">🎨</span>
+                        <img src="{% static 'images/kazakh_bride.png' %}" alt="Bride" width="60" height="60">
                     </div>
                     <h3>Цветовые Пары</h3>
                     <p>Найдите совпадающие эмодзи на экране. Ошибся — начни сначала! Тренирует память и визуальное восприятие.</p>
@@ -403,7 +526,7 @@
                 <!-- Match the Feel -->
                 <div class="card card-logic">
                     <div class="card-icon">
-                    <span style="font-size: 28px;">💫</span>
+                        <img src="{% static 'images/dombra_instrument.png' %}" alt="Dombra" width="60" height="60">
                     </div>
                     <h3>Общая Тематика</h3>
                     <p>Меняйте эмодзи в ячейках, пока все не будут относиться к одной тематике. Прокачайте мышление!</p>
@@ -413,7 +536,7 @@
                 <!-- Still Awake -->
                 <div class="card card-memory">
                     <div class="card-icon">
-                    <span style="font-size: 28px;">🌙</span>
+                        <img src="{% static 'images/eagle_hunter.png' %}" alt="Eagle Hunter" width="60" height="60">
                     </div>
                     <h3>Не Спит</h3>
                     <p>Запомните, в каких квартирах горел свет. Потом укажите те, что остались освещёнными. Проверка памяти!</p>
@@ -423,7 +546,7 @@
                 <!-- Chess (Placeholder if not implemented) -->
                 <div class="card card-logic">
                     <div class="card-icon">
-                    <span style="font-size: 28px;">♟️</span>
+                        <img src="{% static 'images/yurt.png' %}" alt="Yurt" width="60" height="60">
                     </div>
                     <h3>Шахматы с ИИ</h3>
                     <p>Играйте в шахматы против искусственного интеллекта. Настройте глубину поиска и наблюдайте за ходами компьютера в реальном времени!</p>
@@ -432,6 +555,8 @@
             </div>
         </div>
     </section>
+
+    <div class="ornament-divider"></div>
 
     <!-- Quote Section -->
     <section class="quote-section" style="background: linear-gradient(to right, #f5f0ff, #d8c2f3); padding: 80px 20px; text-align: center;">
@@ -442,9 +567,11 @@
             <p style="margin-top: 20px; font-size: 1.2rem; color: #666;">— Платон</p>
         </div>
     </section>
+
+    <div class="ornament-divider"></div>
     
     <!-- Game Recommender Quiz -->
-    <section style="background-color: #e0f2fe; padding: 80px 20px;">
+    <section style="background-color: #e0f2fe; padding: 80px 20px;" id="quiz">
         <div class="container">
             <div class="section-header">
                 <h2 style="color: #2563eb;">Какая игра подойдёт вашему ребёнку?</h2>
@@ -473,8 +600,10 @@
         </div>
     </section>
 
+    <div class="ornament-divider"></div>
+
     <!-- For Parents Section -->
-    <section style="background-color: #fff8e1; padding: 80px 20px;">
+    <section style="background-color: #fff8e1; padding: 80px 20px;" id="parents">
         <div class="container">
             <div class="section-header">
                 <h2 style="color: #d97706;">Для родителей</h2>
@@ -484,6 +613,8 @@
             </div>
         </div>
     </section>
+
+    <div class="ornament-divider"></div>
 
     <!-- Platform Benefits Section -->
     <section class="games-section" style="background-color: #f0f9ff;">
@@ -522,5 +653,15 @@
             </div>
         </div>
     </section>
+    <div class="ornament-divider"></div>
 </body>
+<script>
+    const toggle = document.querySelector('.nav-toggle');
+    const nav    = document.querySelector('.nav-links');
+
+    toggle.addEventListener('click', () => {
+        nav.classList.toggle('show');
+        toggle.setAttribute('aria-expanded', nav.classList.contains('show'));
+    });
+</script>
 </html>
