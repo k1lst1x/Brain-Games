@@ -85,10 +85,21 @@ WSGI_APPLICATION = 'braingames.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'kidgames',
+        'USER': 'kidgamesuser',
+        'PASSWORD': 'q0sSDXp4HC2d',
+        'HOST': '185.22.67.9',
+        'PORT': '5432',
     }
 }
 
