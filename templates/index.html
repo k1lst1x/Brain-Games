@@ -67,12 +67,13 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(to bottom, #f5f0ff, #e6f0ff);
             padding: 60px 0;
-            background-image: url("{% static 'images/symbol.png' %}");
-            background-position: top left;
-            background-repeat: no-repeat;
-            background-size:auto;
+            background-image: 
+                url("{% static 'images/symbol.png' %}"),
+                linear-gradient(180deg, #e9d4ff 0%, #d1f4ff 100%);
+            background-position: top left, center;
+            background-repeat: no-repeat, no-repeat;
+            background-size: 20%, cover;
         }
 
         .hero-content {
@@ -121,6 +122,12 @@
         /* Games Section */
         .games-section {
             padding: 60px 0;
+            background-image: 
+                url("{% static 'images/symbol2.png' %}"),
+                linear-gradient(180deg, #e9d4ff 0%, #d1f4ff 100%);
+            background-position: top right, center;
+            background-repeat: no-repeat, no-repeat;
+            background-size: 20%, cover;
         }
 
         .section-header {
@@ -357,6 +364,36 @@
         .ornament-divider:nth-of-type(2n) { background-color: #ffeccf; } /* чуть темнее янтарного (#d97706) */
         .ornament-divider:nth-of-type(3n) { background-color: #dce8ff; } /* чуть темнее синего   (#2563eb) */
         .ornament-divider:nth-of-type(4n) { background-color: #d6f7ec; } /* чуть темнее зелёного (#059669) */
+        /* === Falling Emojis Animation === */
+        .falling-emojis-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0; /* Позади основного контента */
+        }
+
+        .falling-emoji {
+            position: absolute;
+            top: -50px;
+            font-size: 2rem;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -365,7 +402,7 @@
         <div class="container nav-wrapper">
             <!-- Логотип -->
             <a href="{% url 'index' %}" class="nav-logo">
-                <img src="{% static 'images/logo.png' %}" alt="Kids Brain Games">
+                <img src="{% static 'images/logo1.png' %}" alt="Kids Brain Games">
             </a>
         
             <!-- Гамбургер (виден <768 px) -->
@@ -401,6 +438,7 @@
   
     <!-- Hero Section -->
     <section class="hero">
+        <div class="falling-emojis-container" id="falling-emojis"></div>
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
@@ -664,5 +702,34 @@
         nav.classList.toggle('show');
         toggle.setAttribute('aria-expanded', nav.classList.contains('show'));
     });
+</script>
+<script>
+    const emojis = ["🎯", "🧠", "🎲", "🧩", "🧒", "👧", "🦉", "🐴", "🏆", "📚", "✨", "🌈", "🧮"];
+    const container = document.getElementById('falling-emojis');
+
+    function createFallingEmoji() {
+        const emoji = document.createElement('span');
+        emoji.classList.add('falling-emoji');
+        emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+
+        // Случайное начальное положение по оси X
+        emoji.style.left = Math.random() * 100 + 'vw';
+        // Случайная длительность анимации
+        const duration = 5 + Math.random() * 5;
+        emoji.style.animationDuration = duration + 's';
+        // Размер
+        const size = 1 + Math.random() * 1.5;
+        emoji.style.fontSize = size + 'rem';
+
+        container.appendChild(emoji);
+
+        // Удалить через завершение анимации
+        setTimeout(() => {
+            emoji.remove();
+        }, duration * 1000);
+    }
+
+    // Генерируем эмодзи каждые 300мс
+    setInterval(createFallingEmoji, 300);
 </script>
 </html>
