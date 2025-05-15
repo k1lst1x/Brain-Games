@@ -76,6 +76,16 @@
             background-size: 20%, cover;
         }
 
+        .quiz-section {
+            padding: 80px 20px;
+            background-image: 
+                url("{% static 'images/symbol3.png' %}"),
+                linear-gradient(to bottom, #f0faff, #e0f2fe, #b9e6fc);
+            background-position: top left, center;
+            background-repeat: no-repeat, no-repeat;
+            background-size: 20%, cover;
+        }
+
         .hero-content {
             display: flex;
             flex-wrap: wrap;
@@ -394,6 +404,9 @@
                 opacity: 0;
             }
         }
+        p {
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
@@ -610,7 +623,7 @@
     <div class="ornament-divider"></div>
     
     <!-- Game Recommender Quiz -->
-    <section style="background-color: #e0f2fe; padding: 80px 20px;" id="quiz">
+    <section class="quiz-section" id="quiz">
         <div class="container">
             <div class="section-header">
                 <h2 style="color: #2563eb;">Какая игра подойдёт вашему ребёнку?</h2>
